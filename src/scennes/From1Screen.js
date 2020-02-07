@@ -29,7 +29,11 @@ export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 50,
+      horizon: 5,
+      name: 'Homer',
+      targetAmount: '100000',
+      inicialInvestment: '1000',
+      periodicContributions: '0',
     };
   }
   change(value) {
@@ -64,7 +68,7 @@ export default class HomeScreen extends React.Component {
                   marginBottom: 10,
                 }}
                 // onChangeText={identification => this.setState({ identification })}
-                placeholder="Nombre"
+                placeholder={this.state.name}
                 // placeholderTextColor={Colors.alphaWhite}
                 // underlineColorAndroid={Colors.tertiary}
               />
@@ -90,7 +94,7 @@ export default class HomeScreen extends React.Component {
                   marginBottom: 10,
                 }}
                 // onChangeText={identification => this.setState({ identification })}
-                placeholder="Nombre"
+                placeholder={this.state.targetAmount}
                 // placeholderTextColor={Colors.alphaWhite}
                 // underlineColorAndroid={Colors.tertiary}
               />
@@ -105,7 +109,7 @@ export default class HomeScreen extends React.Component {
                   step={1}
                   maximumValue={100}
                   onValueChange={this.change.bind(this)}
-                  value={value}
+                  value={this.state.horizon}
               />
             </View>
             <View style={styles.viewWellcome}>
@@ -124,7 +128,7 @@ export default class HomeScreen extends React.Component {
                   marginBottom: 10,
                 }}
                 // onChangeText={identification => this.setState({ identification })}
-                placeholder="Nombre"
+                placeholder={this.state.inicialInvestment}
                 // placeholderTextColor={Colors.alphaWhite}
                 // underlineColorAndroid={Colors.tertiary}
               />
@@ -149,7 +153,7 @@ export default class HomeScreen extends React.Component {
                   marginBottom: 10,
                 }}
                 // onChangeText={identification => this.setState({ identification })}
-                placeholder="Nombre"
+                placeholder={this.state.periodicContributions}
                 // placeholderTextColor={Colors.alphaWhite}
                 // underlineColorAndroid={Colors.tertiary}
               />
@@ -174,7 +178,7 @@ export default class HomeScreen extends React.Component {
                   marginBottom: 10,
                 }}
                 // onChangeText={identification => this.setState({ identification })}
-                placeholder="Nombre"
+                value="MENSUAL"
                 // placeholderTextColor={Colors.alphaWhite}
                 // underlineColorAndroid={Colors.tertiary}
               />
@@ -184,7 +188,7 @@ export default class HomeScreen extends React.Component {
               } */}
             </View>
             <View style={styles.viewButton}>
-              <TouchableHighlight style = {styles.button} onPress={() => Alert.alert('Right button pressed')}>
+              <TouchableHighlight style = {styles.button} onPress={() => this.props.navigation.navigate('ChartScreen', this.state)}>
                 <Text style={styles.textButton}>
                   Continuar
                 </Text>
