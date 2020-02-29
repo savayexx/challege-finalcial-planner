@@ -3,6 +3,10 @@ import { View, StyleSheet, Text, TextInput, TouchableHighlight } from 'react-nat
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { getPlanification } from '../services/finnancialPlanningService'
+import { Input, SocialIcon } from 'react-native-elements';
+
+import Emoji from 'react-native-emoji';
+
 
 import Chart from '../components/Chart'
 
@@ -24,6 +28,10 @@ function sanitizeSerie(data){
     }
 
   }
+
+  serie.favorableScenario.push(data.serie[data.serie.length-1].bestScenario.amount)
+  serie.moderateScenario.push(data.serie[data.serie.length-1].expectedScenario.amount)
+  serie.unfavorableScenario.push(data.serie[data.serie.length-1].worstScenario.amount)
   return serie;
 }
 
@@ -33,7 +41,8 @@ export default class ChartScreen extends Component {
     this.state = {
       isLoading: true,
       risk: 1,
-      horizon: 10,
+      horizon: 5,
+      result:1.215,
       initialAmount: 100,
       targetAmount: 2000,
       periodicContributions: 0,
@@ -51,6 +60,7 @@ export default class ChartScreen extends Component {
       initialAmount: this.state.initialAmount,
       targetAmount:  this.state.targetAmount,
       periodicContributions: this.state.periodicContributions,
+      horizon: this.state.horizon,
      }
 
       const response = await getPlanification(params)
@@ -58,13 +68,15 @@ export default class ChartScreen extends Component {
       this.setState({
         isLoading: false,
         serie: serieSanitized,
+        result: parseInt(response.data.summary.expectedScenario.amount, 10),
       });
     }
   }
 
   async componentDidMount() {
-
+    const horizon = parseInt(this.props.navigation.getParam( 'horizon', ''), 10);
     await this.setState({
+      horizon,
       initialAmount: this.props.navigation.getParam( 'inicialInvestment', ''),
       targetAmount: this.props.navigation.getParam( 'targetAmount', ''),
       periodicContributions: this.props.navigation.getParam( 'periodicContributions', ''),
@@ -78,26 +90,43 @@ export default class ChartScreen extends Component {
     }
 
     return (
-      <LinearGradient colors={['#fff','#4BBABC', '#2c264b']}
+      <LinearGradient colors={['#fff','#B8E0EA', '#50DEC6']}
       style={{ padding: 15, alignItems: 'center', flex: 1 }}>
         <View style={{ alignItems: 'center', marginTop: 30 }}>
-          <View style={styles.tabBarInfoContainer}>
-            <Text style={styles.tabBarInfoText}>
-              Modificar respuestas
-            </Text>
-
-            <View>
-                <Text>Aportación periódica</Text>
-                <TextInput
-                  onChangeText={(text) => this.setState({ periodicContributions: text || 0 })}
-                  onSubmitEditing={() => this.callApi()}
-                  value= {this.state.periodicContributions}
-                  keyboardType={'numeric'}
-                />
-              </View>
+          <Chart serie={this.state.serie}/>
           </View>
-        <Chart serie={this.state.serie}/>
-        <TouchableHighlight style = {styles.button} onPress={() => this.props.navigation.navigate('Form1')}>
+          <View>
+          <Text>
+              La planificación estima que el importe final será de <Text style={{ fontWeight: 'bold' }}>{this.state.result}€</Text>
+          </Text>
+          
+          {this.state.result < this.state.targetAmount ? (
+          <View style={{  alignItems: 'center' }}>
+          <Emoji name="sweat" style={{fontSize: 25}} />
+            <Text>
+                Lo sentimos no ha llegado a su objetivo de {this.state.targetAmount}€, puede recalcularlo introduciendo aportaciones periodicas
+            </Text>
+                  <Input
+                    label='Aportación periódica'
+                    onChangeText={(text) => this.setState({ periodicContributions: text || 0 })}
+                    onSubmitEditing={() => this.callApi()}
+                    value= {this.state.periodicContributions}
+                    keyboardType={'numeric'}
+                  />
+          </View> ) : (
+          <View style={{  alignItems: 'center' }}>
+            <Emoji name="relaxed" style={{fontSize: 25}} />            
+            <Text>
+                ¡Enhorabuena, ha cumplido su objetivo, compártalo con sus amigos!
+            </Text>
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <SocialIcon type='twitter'/>
+              <SocialIcon type='facebook'/>
+              <SocialIcon type='medium'/>
+            </View>
+          </View>
+            )}
+        <TouchableHighlight style = {styles.button} onPress={() => this.props.navigation.navigate('Form1')}>     
           <Text style={styles.textButton}>
             Atrás
           </Text>

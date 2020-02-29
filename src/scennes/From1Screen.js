@@ -3,22 +3,17 @@ import {
   StyleSheet,
   View,
   Text,
-  Alert,
-  TouchableHighlight,
-  ImageBackground,
   TextInput,
+  TouchableHighlight,
   ScrollView,
-  Slider,
 } from 'react-native';
+
+import { Slider, Input } from 'react-native-elements';
+
 import Constants from 'expo-constants';
 // import Navigator from './src/components/Navigator';
-import initBackgroundImage from '../images/initBackground.jpg';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Container, Form, Button, Content, Card, CardItem, Item, Body, Picker, Input } from 'native-base';
-
-function Separator() {
-  return <View style={styles.separator} />;
-}
+import { Picker } from 'native-base';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -31,8 +26,8 @@ export default class HomeScreen extends React.Component {
     this.state = {
       horizon: 5,
       name: 'Homer',
-      targetAmount: '100000',
-      inicialInvestment: '1000',
+      targetAmount: '0',
+      inicialInvestment: '0',
       periodicContributions: '0',
     };
   }
@@ -45,148 +40,74 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-    const {value} = this.state;
     return (
       // <LinearGradient colors={['#4BBABC', '#2c264b', '#2c264b']}
-      <LinearGradient colors={['#fff','#4BBABC', '#2c264b']}
-        style={{ padding: 15, alignItems: 'center' }}>
+      <LinearGradient colors={['#fff','#B8E0EA', '#50DEC6']}
+        style={{ marginTop: 20, padding: 15, alignItems: 'center' }}>
         <ScrollView>
           <View style={{ flex: 1}}>
-            <View style={styles.viewWellcome}>
-              <Text style={styles.textWellcome}>Nombre</Text>
-              <TextInput
-                style={{
-                  paddingLeft: 10,
-                  height: 50,
-                  width: '100%',
-                  // fontFamily: Texts.regularFont,
-                  // fontSize: SizeCalc.scale(5),
-                  // color: Colors.white,
-                  backgroundColor: '#fff',
-                  // borderWidth: this.state.error ? 1 : 0,
-                  borderColor: 'red',
-                  marginBottom: 10,
-                }}
-                // onChangeText={identification => this.setState({ identification })}
-                placeholder={this.state.name}
-                // placeholderTextColor={Colors.alphaWhite}
-                // underlineColorAndroid={Colors.tertiary}
-              />
-              {/* {this.state.error
-                ? <Text style={{ color: 'red', fontFamily: Texts.semiboldFont, fontSize: SizeCalc.scale(3) }}>{I18n.t('forgotten_error')}</Text>
-                : null
-              } */}
+            <View>
+            <Input
+            label='Intruduce tu nombre'
+            placeholder='Nombre'
+            />
             </View>
-            <View style={styles.viewWellcome}>
-              <Text style={styles.textWellcome}>Cuánto necesito</Text>
+            <View>
+              <Input
+                label='¿Cuánto dinero necesito?'
+                keyboardType= "numeric"
+                placeholder={'100.000€'}
+                placeholderTextColor='#aaa'
+                onChangeText={(value) => this.setState({ targetAmount: value || '' })}
+                value= {this.state.targetAmount}
+
+
+              />
+            </View>
+            <View style={{ flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+              <View style= {styles.sliderInput}>
+                <TextInput style= {styles.inputLabel}>Horizonte temporal</TextInput>
+                  <Slider
+                    value={this.state.horizon}
+                    minimumValue={0}
+                    maximumValue={12}
+                    thumbTintColor='#4BBABC'
+                    onValueChange={value => this.setState({ horizon: value })}
+                    />
+                  <TextInput style={styles.sliderResult}>{parseInt(this.state.horizon,10)} Años</TextInput>
+              </View>
+            </View>
+            <View>
               <Input
                 keyboardType= "numeric"
-                style={{
-                  paddingLeft: 10,
-                  height: 50,
-                  width: '100%',
-                  // fontFamily: Texts.regularFont,
-                  // fontSize: SizeCalc.scale(5),
-                  // color: Colors.white,
-                  backgroundColor: '#fff',
-                  // borderWidth: this.state.error ? 1 : 0,
-                  borderColor: 'red',
-                  marginBottom: 10,
-                }}
-                // onChangeText={identification => this.setState({ identification })}
-                placeholder={this.state.targetAmount}
-                // placeholderTextColor={Colors.alphaWhite}
-                // underlineColorAndroid={Colors.tertiary}
+                label= 'Aportación inicial'
+                placeholder={'100€'}
+                onChangeText={(value) => this.setState({ inicialInvestment: value || '' })}
+                value={this.state.inicialInvestment}
               />
-              {/* {this.state.error
-                ? <Text style={{ color: 'red', fontFamily: Texts.semiboldFont, fontSize: SizeCalc.scale(3) }}>{I18n.t('forgotten_error')}</Text>
-                : null
-              } */}
+    
             </View>
-            <View style={styles.viewWellcome}>
-              <Text style={styles.textWellcome}>Horizonte temporal</Text>
-              <Slider
-                  step={1}
-                  maximumValue={100}
-                  onValueChange={this.change.bind(this)}
-                  value={this.state.horizon}
+            <View>
+              <Input
+                label='Aportación periódica'
+                placeholder={this.state.periodicContributions + '€'}
+                keyboardType= "numeric"
               />
             </View>
-            <View style={styles.viewWellcome}>
-              <Text style={styles.textWellcome}>Aportación inicial</Text>
-              <TextInput
-                style={{
-                  paddingLeft: 10,
-                  height: 50,
-                  width: '100%',
-                  // fontFamily: Texts.regularFont,
-                  // fontSize: SizeCalc.scale(5),
-                  // color: Colors.white,
-                  backgroundColor: '#fff',
-                  // borderWidth: this.state.error ? 1 : 0,
-                  borderColor: 'red',
-                  marginBottom: 10,
-                }}
-                // onChangeText={identification => this.setState({ identification })}
-                placeholder={this.state.inicialInvestment}
-                // placeholderTextColor={Colors.alphaWhite}
-                // underlineColorAndroid={Colors.tertiary}
-              />
-              {/* {this.state.error
-                ? <Text style={{ color: 'red', fontFamily: Texts.semiboldFont, fontSize: SizeCalc.scale(3) }}>{I18n.t('forgotten_error')}</Text>
-                : null
-              } */}
-            </View>
-            <View style={styles.viewWellcome}>
-              <Text style={styles.textWellcome}>Aportación periódica</Text>
-              <TextInput
-                style={{
-                  paddingLeft: 10,
-                  height: 50,
-                  width: '100%',
-                  // fontFamily: Texts.regularFont,
-                  // fontSize: SizeCalc.scale(5),
-                  // color: Colors.white,
-                  backgroundColor: '#fff',
-                  // borderWidth: this.state.error ? 1 : 0,
-                  borderColor: 'red',
-                  marginBottom: 10,
-                }}
-                // onChangeText={identification => this.setState({ identification })}
-                placeholder={this.state.periodicContributions}
-                // placeholderTextColor={Colors.alphaWhite}
-                // underlineColorAndroid={Colors.tertiary}
-              />
-              {/* {this.state.error
-                ? <Text style={{ color: 'red', fontFamily: Texts.semiboldFont, fontSize: SizeCalc.scale(3) }}>{I18n.t('forgotten_error')}</Text>
-                : null
-              } */}
-            </View>
-            <View style={styles.viewWellcome}>
-              <Text style={styles.textWellcome}>Frecuencia</Text>
-              <TextInput
-                style={{
-                  paddingLeft: 10,
-                  height: 50,
-                  width: '100%',
-                  // fontFamily: Texts.regularFont,
-                  // fontSize: SizeCalc.scale(5),
-                  // color: Colors.white,
-                  backgroundColor: '#fff',
-                  // borderWidth: this.state.error ? 1 : 0,
-                  borderColor: 'red',
-                  marginBottom: 10,
-                }}
-                // onChangeText={identification => this.setState({ identification })}
-                value="MENSUAL"
-                // placeholderTextColor={Colors.alphaWhite}
-                // underlineColorAndroid={Colors.tertiary}
-              />
-              {/* {this.state.error
-                ? <Text style={{ color: 'red', fontFamily: Texts.semiboldFont, fontSize: SizeCalc.scale(3) }}>{I18n.t('forgotten_error')}</Text>
-                : null
-              } */}
-            </View>
+            <View style= {styles.sliderInput}>
+            <TextInput style= {styles.inputLabel}>Frecuencia de aportación</TextInput>
+
+            <Picker
+              selectedValue={this.state.language}
+              style={{height: 50, width: '50%'}}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setState({language: itemValue})
+              }>
+              <Picker.Item label="Mensual" value="MONTHLY" />
+              <Picker.Item label="Trimestral" value="QUATERLY" />
+              <Picker.Item label="Anual" value="ANNUAL" />
+            </Picker>
+          </View>
             <View style={styles.viewButton}>
               <TouchableHighlight style = {styles.button} onPress={() => this.props.navigation.navigate('ChartScreen', this.state)}>
                 <Text style={styles.textButton}>
@@ -205,8 +126,6 @@ export default class HomeScreen extends React.Component {
     );
   }
 }
-// onPress={() => Alert.alert('Right button pressed')}
-// onPress={() => this.props.navigation.navigate('forgottenPassword')}
 
 const styles = StyleSheet.create({
   container: {
@@ -217,17 +136,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: '#D9E3F0'
   },
-  textWellcome: {
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: "300",
+  inputLabel: {
+    fontSize: 16,
+    color: '#86939e',
+    fontWeight: 'bold',
   },
-  viewWellcome: {
-    marginTop: 25,
-    marginBottom: 10,
-    alignItems: "center",
-    textAlign: 'center',
-    flex: 1,
+  sliderInput: {
+    margin: 10,
+  },
+  sliderResult: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    alignItems: 'center',
+    borderColor: '#86939e',
   },
   viewButton: {
     marginTop: 60,
@@ -267,9 +188,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#DB3E00'
   },
-  separator: {
-    marginVertical: 8,
-    borderBottomColor: '#737373',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
+ 
 });
